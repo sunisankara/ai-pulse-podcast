@@ -1,17 +1,19 @@
 import { GoogleGenAI, Modality } from "@google/genai";
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || "" });
+// Always use the specified initialization format with process.env.API_KEY.
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 export const fetchAINews = async (cats: string[], auto: boolean) => {
   const res = await ai.models.generateContent({
     model: 'gemini-3-flash-preview',
-    contents: `Research AI news for ${cats.join(', ')}. [METADATA] TOP_STORIES: Story 1, Story 2`,
+    contents: "Find the top 3 AI news stories from today.",
     config: { tools: [{ googleSearch: {} }] }
   });
-  return { newsText: res.text, topStories: ["Daily Intelligence"], autoInjectedTopics: [] };
+  // Use .text property to extract response.
+  return { newsText: res.text, topStories: ["Daily Intelligence Update"] };
 };
 export const generatePodcastScript = async (text: string) => {
   const res = await ai.models.generateContent({
     model: 'gemini-3-flash-preview',
-    contents: `Write a podcast script for AI Daily Pulse based on: ${text}`
+    contents: "Write a short podcast script based on this news: " + text
   });
   return res.text;
 };
