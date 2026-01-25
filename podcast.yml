@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       is_test:
-        description: 'Diagnostic Test (5m Tone)'
+        description: 'AI Daily Pulse Podcast'
         required: false
         default: 'false'
 
@@ -32,8 +32,8 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          git config --global user.name "Sundaram Labs Bot"
-          git config --global user.email "bot@sundaramlabs.ai"
+          git config --global user.name "Sundaram Labs"
+          git config --global user.email "shankar.sundaram.0@gmail.com"
           git add .
           git commit -m "Broadcast Update: $(date +'%Y-%m-%d')" || echo "No changes to commit"
           git push
