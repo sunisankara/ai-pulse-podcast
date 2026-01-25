@@ -15,7 +15,7 @@ export function generateRSSFeed(episodes: any[], baseUrl: string) {
     <link>${baseUrl}</link>
     <language>en-us</language>
     <itunes:author>Sundaram Labs</itunes:author>
-    <itunes:summary>Your daily automated 15-minute AI news deep dive.</itunes:summary>
+    <itunes:summary>A 15-minute daily deep dive into technical and business AI shifts. Produced by Sundaram Labs.</itunes:summary>
     ${items}
   </channel>
 </rss>`;
