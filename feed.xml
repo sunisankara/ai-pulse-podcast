@@ -5,14 +5,14 @@
     <link>https://sunisankara.github.io/ai-pulse-podcast</link>
     <language>en-us</language>
     <itunes:author>Sundaram Labs</itunes:author>
-    <itunes:summary>Your daily AI news update.</itunes:summary>
+    <itunes:summary>Your daily 15-minute conversational deep dive into latest AI developments.</itunes:summary>
     
     <item>
-      <title>AI Pulse: Daily Intelligence Update</title>
-      <pubDate>Sun, 25 Jan 2026 04:43:54 GMT</pubDate>
-      <enclosure url="https://sunisankara.github.io/ai-pulse-podcast/audio/episode-1769316197386.mp3" type="audio/mpeg" length="0"/>
-      <itunes:summary>AI Pulse: Daily Intelligence Update</itunes:summary>
-      <guid>1769316197386</guid>
+      <title>AI Pulse: Google Research "Prompt Repetition" Breakthrough</title>
+      <pubDate>Sun, 25 Jan 2026 05:02:25 GMT</pubDate>
+      <enclosure url="https://sunisankara.github.io/ai-pulse-podcast/audio/episode-1769317059603.mp3" type="audio/mpeg" length="0"/>
+      <itunes:summary>AI Pulse: Google Research "Prompt Repetition" Breakthrough</itunes:summary>
+      <guid>1769317059603</guid>
     </item>
   </channel>
 </rss>
