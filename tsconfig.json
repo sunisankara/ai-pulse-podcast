@@ -8,8 +8,6 @@
     "strict": true,
     "skipLibCheck": true,
     "baseUrl": ".",
-    "paths": {
-      "*": ["node_modules/*"]
-    }
+    "paths": { "*": ["node_modules/*"] }
   }
 }
