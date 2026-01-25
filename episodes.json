@@ -1,16 +1,1 @@
-[
-  {
-    "id": "1769315223292",
-    "date": "2026-01-25T04:27:05.756Z",
-    "title": "System Diagnostic Test - 440Hz Tone",
-    "script": "This is a diagnostic tone broadcast.",
-    "audioUrl": "https://github.com/sunisankara/ai-pulse-podcast/releases/download/v1.0.0/episode-1769315223292.mp3",
-    "topics": [
-      "Diagnostics"
-    ],
-    "mainStories": [
-      "Sine Wave Test"
-    ],
-    "status": "generated"
-  }
-]
+[]
