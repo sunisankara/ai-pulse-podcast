@@ -7,7 +7,7 @@ import { Buffer } from 'buffer';
 const IS_TEST = process.env.IS_TEST === 'true';
 
 async function run() {
-  console.log('--- AI PULSE BROADCASTER (v0.4.1) ---');
+  console.log('--- AI PULSE BROADCASTER (v0.4.2) ---');
   const id = Date.now().toString();
   const rawFilename = `episode-${id}.mp3`;
   
