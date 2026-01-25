@@ -1,6 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title>AI Pulse Feed</title>
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+  <channel>
+    <title>AI Daily Pulse</title>
+    <link>https://sunisankara.github.io/ai-pulse-podcast</link>
+    <language>en-us</language>
+    <itunes:author>Sundaram Labs</itunes:author>
+    <itunes:summary>Your daily AI news update.</itunes:summary>
+    
     <item>
-      <title>System Diagnostic Test - 440Hz Tone</title>
-      <pubDate>Sun, 25 Jan 2026 04:27:05 GMT</pubDate>
-      <enclosure url="https://github.com/sunisankara/ai-pulse-podcast/releases/download/v1.0.0/episode-1769315223292.mp3" type="audio/mpeg" length="0"/>
-    </item></channel></rss>
+      <title>AI Pulse: Daily Intelligence Update</title>
+      <pubDate>Sun, 25 Jan 2026 04:43:54 GMT</pubDate>
+      <enclosure url="https://sunisankara.github.io/ai-pulse-podcast/audio/episode-1769316197386.mp3" type="audio/mpeg" length="0"/>
+      <itunes:summary>AI Pulse: Daily Intelligence Update</itunes:summary>
+      <guid>1769316197386</guid>
+    </item>
+  </channel>
+</rss>
