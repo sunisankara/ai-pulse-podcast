@@ -7,7 +7,7 @@ import { Buffer } from 'buffer';
 const IS_TEST = process.env.IS_TEST === 'true';
 
 async function run() {
-  console.log('--- AI PULSE BROADCASTER (v0.5.1) ---');
+  console.log('--- AI DAILY PULSE BROADCASTER (v0.6.0) ---');
   const id = Date.now().toString();
   const rawFilename = `episode-${id}.mp3`;
   
@@ -23,61 +23,57 @@ async function run() {
     let episodeData: any;
 
     if (IS_TEST) {
-      console.log('MODE: DIAGNOSTIC (Short Signal)');
-      execSync(`ffmpeg -f lavfi -i "sine=frequency=440:duration=10" -acodec libmp3lame -ab 128k ${finalPath}`);
+      console.log('MODE: DIAGNOSTIC (1s Beep)');
+      execSync(`ffmpeg -f lavfi -i "sine=frequency=1000:duration=1" -acodec libmp3lame ${finalPath}`);
       episodeData = {
         id,
         date: new Date().toISOString(),
-        title: "Diagnostic Signal (v0.5.1)",
+        title: "Station Health Check (v0.6.0)",
         audioUrl: `${baseUrl}/${finalPath}`,
-        mainStories: ["System Handshake"]
+        mainStories: ["System Verification"]
       };
     } else {
-      console.log('Step 1: Intelligence Gathering...');
-      const news = await fetchAINews(["LLM Breakthroughs", "AI Agents", "Hardware", "Startup Funding"], true);
+      console.log('Step 1: Deep Research (Technical & Business focus)...');
+      const news = await fetchAINews(["Claude for Teams/Co-work", "Davos AI Sentiment", "Journalistic AI Insights", "GPU Supply Chains"], true);
       
-      console.log('Step 2: Script Synthesis...');
+      console.log('Step 2: Script Synthesis (Conversational Mode)...');
       const script = await generatePodcastScript(news.newsText);
       
-      console.log('Step 3: Neural Voice Generation...');
+      console.log('Step 3: Multi-Speaker Voice Production...');
       const segments = script.split('[TRANSITION]').filter(s => s.trim().length > 5);
       
       for (let i = 0; i < segments.length; i++) {
-        console.log(`Synthesizing segment ${i+1} of ${segments.length}...`);
+        console.log(`Generating Audio Segment ${i+1} of ${segments.length}...`);
         const chunks = await generateSegmentAudio(segments[i]);
         for (const chunk of chunks) fs.appendFileSync(pcmFile, Buffer.from(chunk, 'base64'));
       }
       
-      console.log('Step 4: Master Encoding...');
+      console.log('Step 4: Final Master Encoding...');
       execSync(`ffmpeg -f s16le -ar 24000 -ac 1 -i ${pcmFile} -acodec libmp3lame -ab 128k ${finalPath}`);
       if (fs.existsSync(pcmFile)) fs.unlinkSync(pcmFile);
       
       episodeData = {
         id,
         date: new Date().toISOString(),
-        title: `AI Pulse: ${news.topStories[0] || 'Daily Intel'}`,
+        title: `AI Daily Pulse: ${news.topStories[0] || 'Daily Report'}`,
         audioUrl: `${baseUrl}/${finalPath}`,
         mainStories: news.topStories
       };
     }
 
-    console.log('Step 5: Updating Local Database...');
     let history = [];
     if (fs.existsSync('episodes.json')) {
       history = JSON.parse(fs.readFileSync('episodes.json', 'utf8'));
     }
     history.unshift(episodeData);
-    history = history.slice(0, 50); // Keep last 50
-    fs.writeFileSync('episodes.json', JSON.stringify(history, null, 2));
+    fs.writeFileSync('episodes.json', JSON.stringify(history.slice(0, 50), null, 2));
 
-    console.log('Step 6: Regenerating Public Feed...');
     const rss = generateRSSFeed(history, baseUrl);
     fs.writeFileSync('feed.xml', rss);
 
-    console.log('--- BROADCAST COMPLETE ---');
-    console.log(`Feed URL: ${baseUrl}/feed.xml`);
+    console.log('--- BROADCAST SUCCESSFUL ---');
   } catch (error) {
-    console.error('CRITICAL ENGINE FAILURE:', error);
+    console.error('ENGINE CRITICAL FAILURE:', error);
     process.exit(1);
   }
 }
