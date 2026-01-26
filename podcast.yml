@@ -2,7 +2,7 @@
 name: Daily Podcast Broadcast
 on:
   schedule:
-    - cron: '0 5 * * 1-5' # Runs at 05:00 UTC, Mon-Fri
+    - cron: '0 12 * * 1-5' # 05:00 AM MST (Arizona), Mon-Fri
   workflow_dispatch:
     inputs:
       is_test:
@@ -10,7 +10,6 @@ on:
         required: false
         default: 'false'
 
-# FIX: Prevents multiple concurrent runs from colliding and triggering "cancelled" emails.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
