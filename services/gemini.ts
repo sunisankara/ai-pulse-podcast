@@ -2,13 +2,13 @@ import { GoogleGenAI, Modality } from "@google/genai";
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export const fetchAINews = async (cats: string[], auto: boolean) => {
-  const prompt = `Find 5+ high-signal AI news stories from last 24h (TechCrunch/TLDR style). [METADATA] TOP_STORIES: Story A, Story B`;
+  const prompt = `Research AI: (1) Cutting-edge tech, (2) Market/M&A, (3) User tools, (4) New services, (5) Startups, (6) US Legislature, (7) Academic Research. [METADATA] TOP_STORIES: S1, S2, S3`;
   const res = await ai.models.generateContent({ model: 'gemini-3-flash-preview', contents: prompt, config: { tools: [{ googleSearch: {} }] } });
-  return { newsText: res.text || "", topStories: ["Update"] };
+  return { newsText: res.text || "", topStories: ["Daily Intelligence"] };
 };
 
 export const generatePodcastScript = async (text: string) => {
-  const prompt = `Write a 2,200 WORD podcast script. Hosts: Alex (Female Skeptic) and Marcus (Male Optimist). Use [TRANSITION] between 5 topics. Branding: Sundaram Labs.`;
+  const prompt = `Write 2,200 words for "AI Daily Pulse by Sundaram Labs". Hosts: Alex (Female Tech Skeptic) & Marcus (Male Biz Optimist). Cover the 7 pillars of AI. End with: Subscribe to Sundaram Labs.`;
   const res = await ai.models.generateContent({ model: 'gemini-3-pro-preview', contents: prompt });
   return res.text || "";
 };
