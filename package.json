@@ -1,6 +1,6 @@
 {
   "name": "ai-pulse-podcast",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "type": "module",
   "dependencies": {
     "@google/genai": "^1.38.0",
