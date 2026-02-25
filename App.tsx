@@ -4,7 +4,7 @@ import { fetchAINews, generatePodcastScript } from './services/gemini.ts';
 
 declare var window: any;
 
-const VERSION = "v0.9.7 (Sync Fix)";
+const VERSION = "v0.9.9 (Security Focused)";
 
 // --- CRYPTO UTILS ---
 const ENCRYPTION_KEY_ALGO = { name: 'AES-GCM', length: 256 };
@@ -44,7 +44,7 @@ const App: React.FC = () => {
 
   const handleLockVault = async () => {
     if (!activePat || !masterPassword || !githubUser || !githubRepo) { 
-      setError("Setup incomplete: Check PAT, Repository, and Password."); 
+      setError("Station setup requires: PAT, Repository, and Password."); 
       return; 
     }
     try {
@@ -56,33 +56,33 @@ const App: React.FC = () => {
       setActivePat('');
       setMasterPassword('');
       setError(null);
-      setProgress("STATION SECURED");
+      setProgress("STATION ARMED");
     } catch (e) { setError("Encryption logic failed."); }
   };
 
   const handleUnlockVault = async () => {
     const vaultStr = localStorage.getItem('gh_vault');
-    if (!vaultStr) { setError("No station data found."); return; }
+    if (!vaultStr) { setError("No vault found on this device."); return; }
     try {
       const vault = JSON.parse(vaultStr);
       const pat = await decryptData(vault, masterPassword);
       setActivePat(pat);
       setIsVaultLocked(false);
       setError(null);
-      setProgress("STATION UNLOCKED");
-    } catch (e) { setError("Decryption failed: Incorrect password."); }
+      setProgress("STATION DEPLOYED");
+    } catch (e) { setError("Access Denied: Master Password incorrect."); }
   };
 
   const triggerDiagnostic = async () => {
-    if (isVaultLocked || !activePat) { setError("Unlock station first."); return; }
-    setProgress("SENDING DIAGNOSTIC PING...");
+    if (isVaultLocked || !activePat) { setError("Unlock console first."); return; }
+    setProgress("SENDING HEARTBEAT...");
     try {
       const headers = { 'Authorization': `token ${activePat}`, 'Accept': 'application/vnd.github.v3+json' };
       const res = await fetch(`https://api.github.com/repos/${githubUser}/${githubRepo}/actions/workflows/test-cron.yml/dispatches`, {
         method: 'POST', headers, body: JSON.stringify({ ref: 'main' })
       });
-      if (!res.ok) throw new Error(`Diagnostic failed: ${res.status}. Verify PAT scopes.`);
-      setProgress("HEARTBEAT PING SENT");
+      if (!res.ok) throw new Error(`Heartbeat Failed: Status ${res.status}. Verify PAT scopes (repo, workflow).`);
+      setProgress("PULSE DETECTED");
     } catch (err: any) { setError(err.message); }
   };
 
@@ -91,29 +91,29 @@ const App: React.FC = () => {
     setError(null);
     setSources([]);
     setPreviewScript("");
-    setProgress("TEMPORAL SYNC: SCANNING LAST 24H...");
+    setProgress("SCANNING TEMPORAL DATA...");
     try {
       const news = await fetchAINews();
       setSources(news.sources || []);
-      setProgress("SYNTHESIZING EXPERT VOICES...");
+      setProgress("SYNTHESIZING AGENTS...");
       const script = await generatePodcastScript(news.newsText);
       setPreviewScript(script);
-      setProgress("SYNC READY");
+      setProgress("SYNC COMPLETE");
     } catch (err: any) { 
-      setError(`Intelligence Sync Failed: ${err.message}`); 
+      setError(`Sync Error: ${err.message}`); 
     } finally { setIsPreviewing(false); }
   };
 
   const triggerBroadcast = async () => {
-    if (isVaultLocked || !activePat) { setError("Unlock station first."); return; }
-    setProgress("DISPATCHING CLOUD BROADCAST...");
+    if (isVaultLocked || !activePat) { setError("Console Locked."); return; }
+    setProgress("DISPATCHING BROADCAST...");
     try {
       const headers = { 'Authorization': `token ${activePat}`, 'Accept': 'application/vnd.github.v3+json' };
       const res = await fetch(`https://api.github.com/repos/${githubUser}/${githubRepo}/actions/workflows/podcast.yml/dispatches`, {
         method: 'POST', headers, body: JSON.stringify({ ref: 'main', inputs: { is_test: "false" } })
       });
-      if (!res.ok) throw new Error(`Broadcast Refused: ${res.status}. Check workflow file path.`);
-      setProgress("BROADCAST STARTED");
+      if (!res.ok) throw new Error(`Request Refused: ${res.status}. Ensure file exists at .github/workflows/podcast.yml`);
+      setProgress("BROADCAST COMMENCING");
     } catch (err: any) { setError(err.message); }
   };
 
@@ -123,17 +123,17 @@ const App: React.FC = () => {
       <div className="bg-gray-800 p-8 md:p-12 rounded-[3rem] border border-gray-700 shadow-2xl mb-12 flex flex-wrap justify-between items-center gap-10">
         <div className="flex items-center gap-8">
            <div className={`w-24 h-24 rounded-[2.5rem] flex items-center justify-center text-5xl shadow-2xl transition-all duration-500 ${isVaultLocked ? 'bg-gray-700 text-gray-500' : 'bg-blue-600 text-white shadow-blue-600/30'}`}>
-             <i className={`fas ${isVaultLocked ? 'fa-shield' : 'fa-signal'}`}></i>
+             <i className={`fas ${isVaultLocked ? 'fa-shield-halved' : 'fa-satellite-dish'}`}></i>
            </div>
            <div>
               <h1 className="text-6xl font-black italic text-blue-400 tracking-tighter uppercase leading-none mb-2">AI Daily Pulse</h1>
-              <p className="text-[11px] font-black text-gray-500 tracking-[0.5em] uppercase">Sundaram Labs | {VERSION}</p>
+              <p className="text-[11px] font-black text-gray-500 tracking-[0.5em] uppercase">Station Control | {VERSION}</p>
            </div>
         </div>
         <div className="flex flex-wrap gap-4">
           <button onClick={generatePreview} disabled={isPreviewing} className="bg-gray-900 border border-gray-700 hover:border-blue-500 px-8 py-6 rounded-2xl font-black uppercase text-xs tracking-widest transition-all disabled:opacity-30">
              {isPreviewing ? <i className="fas fa-spinner fa-spin mr-3"></i> : <i className="fas fa-microchip mr-3"></i>}
-             {isPreviewing ? 'Syncing...' : 'Preview Daily Intelligence'}
+             {isPreviewing ? 'Syncing...' : 'Real-time Preview'}
           </button>
           <button onClick={triggerBroadcast} disabled={isVaultLocked} className="bg-blue-600 hover:bg-blue-500 px-12 py-6 rounded-2xl font-black uppercase text-xs tracking-widest shadow-2xl shadow-blue-600/50 disabled:bg-gray-700 transition-all active:scale-95">
             <i className="fas fa-paper-plane mr-3"></i> Push Broadcast
@@ -147,11 +147,11 @@ const App: React.FC = () => {
              <div className="flex justify-between items-center mb-10">
                 <div className="flex items-center gap-4">
                   <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
-                  <h3 className="text-[11px] font-black uppercase text-gray-500 tracking-[0.4em]">Intelligence Pipeline</h3>
+                  <h3 className="text-[11px] font-black uppercase text-gray-500 tracking-[0.4em]">Intelligence Feed</h3>
                 </div>
                 <div className="flex gap-4">
                    <a href={`https://github.com/${githubUser}/${githubRepo}/actions`} target="_blank" className="text-[10px] font-black uppercase text-blue-400 hover:text-blue-300 transition-all flex items-center gap-2">
-                     <i className="fas fa-external-link-alt"></i> View Action Logs
+                     <i className="fas fa-external-link-alt"></i> Action Logs
                    </a>
                 </div>
              </div>
@@ -161,12 +161,12 @@ const App: React.FC = () => {
                     <pre className="whitespace-pre-wrap font-mono text-gray-300 leading-relaxed text-sm">{previewScript}</pre>
                     {sources.length > 0 && (
                       <div className="pt-8 border-t border-gray-800/50">
-                        <h4 className="text-[10px] font-black uppercase text-gray-500 tracking-[0.4em] mb-4">Grounded Verification</h4>
+                        <h4 className="text-[10px] font-black uppercase text-gray-500 tracking-[0.4em] mb-4">Sources Grounded</h4>
                         <div className="grid grid-cols-1 gap-2">
                           {sources.map((chunk, i) => (
                             chunk.web && (
                               <a key={i} href={chunk.web.uri} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-xs text-blue-400 hover:text-blue-300">
-                                <i className="fas fa-external-link-alt text-[9px]"></i>
+                                <i className="fas fa-link text-[9px]"></i>
                                 <span className="truncate">{chunk.web.title || chunk.web.uri}</span>
                               </a>
                             )
@@ -178,13 +178,13 @@ const App: React.FC = () => {
                 ) : (
                   <div className="h-full flex flex-col items-center justify-center text-center opacity-20">
                     <i className="fas fa-clock-rotate-left text-7xl mb-8"></i>
-                    <p className="text-lg font-black uppercase tracking-widest">Awaiting Real-time Sync</p>
+                    <p className="text-lg font-black uppercase tracking-widest">Awaiting Remote Sync</p>
                   </div>
                 )}
              </div>
              <div className="mt-10 flex justify-between items-center">
-                <p className="text-[11px] font-black uppercase text-gray-500 tracking-widest">Protocol: Gemini 3 Pro Grounded</p>
-                <p className="text-[11px] font-black uppercase text-blue-500 tracking-widest">{progress || 'Standby'}</p>
+                <p className="text-[11px] font-black uppercase text-gray-500 tracking-widest">Grounded Protocol: ACTIVE</p>
+                <p className="text-[11px] font-black uppercase text-blue-500 tracking-widest">{progress || 'Ready'}</p>
              </div>
           </div>
         </div>
@@ -192,55 +192,63 @@ const App: React.FC = () => {
         <div className="space-y-12">
            <div className="bg-gray-800 p-10 rounded-[3rem] border border-gray-700 shadow-xl">
               <div className="flex items-center justify-between mb-10">
-                <h3 className="text-[11px] font-black uppercase text-gray-400 tracking-[0.3em]">Station Control</h3>
+                <h3 className="text-[11px] font-black uppercase text-gray-400 tracking-[0.3em]">Credentials</h3>
                 <i className={`fas ${isVaultLocked ? 'fa-lock text-red-500' : 'fa-unlock text-green-500'}`}></i>
               </div>
               {!localStorage.getItem('gh_vault') ? (
                 <div className="space-y-5">
+                  <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-2xl mb-4">
+                     <p className="text-[9px] text-blue-400 font-bold uppercase leading-tight">
+                        <i className="fas fa-info-circle mr-2"></i>
+                        Generate your PAT at: <br/>
+                        <span className="font-mono lowercase break-all">GitHub > Settings > Developer Settings > PAT (Classic)</span><br/>
+                        Required Scopes: <strong>repo</strong> and <strong>workflow</strong>.
+                     </p>
+                  </div>
                   <input value={githubUser} onChange={e => setGithubUser(e.target.value)} placeholder="GitHub Username" className="w-full bg-black/40 border border-gray-700 rounded-2xl px-6 py-5 text-xs font-mono text-blue-400 outline-none" />
-                  <input value={githubRepo} onChange={e => setGithubRepo(e.target.value)} placeholder="Repo Name (e.g. ai-pulse)" className="w-full bg-black/40 border border-gray-700 rounded-2xl px-6 py-5 text-xs font-mono text-blue-400 outline-none" />
-                  <input type="password" value={activePat} onChange={e => setActivePat(e.target.value)} placeholder="GitHub PAT (with workflow scope)" className="w-full bg-black/40 border border-gray-700 rounded-2xl px-6 py-5 text-xs font-mono text-amber-400 outline-none" />
-                  <input type="password" value={masterPassword} onChange={e => setMasterPassword(e.target.value)} placeholder="Master Station Password" className="w-full bg-black/40 border border-gray-700 rounded-2xl px-6 py-5 text-xs font-mono text-white outline-none" />
-                  <button onClick={handleLockVault} className="w-full bg-blue-600 py-5 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-blue-500">Initialize Credentials</button>
+                  <input value={githubRepo} onChange={e => setGithubRepo(e.target.value)} placeholder="Repository Name" className="w-full bg-black/40 border border-gray-700 rounded-2xl px-6 py-5 text-xs font-mono text-blue-400 outline-none" />
+                  <input type="password" value={activePat} onChange={e => setActivePat(e.target.value)} placeholder="GitHub PAT (ghp_...)" className="w-full bg-black/40 border border-gray-700 rounded-2xl px-6 py-5 text-xs font-mono text-amber-400 outline-none" />
+                  <input type="password" value={masterPassword} onChange={e => setMasterPassword(e.target.value)} placeholder="New Master Password" className="w-full bg-black/40 border border-gray-700 rounded-2xl px-6 py-5 text-xs font-mono text-white outline-none" />
+                  <button onClick={handleLockVault} className="w-full bg-blue-600 py-5 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-blue-500 transition-all">Arm Station</button>
                 </div>
               ) : isVaultLocked ? (
                 <div className="space-y-8 flex flex-col items-center py-6">
                   <input type="password" value={masterPassword} onChange={e => setMasterPassword(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleUnlockVault()} placeholder="Master Password" 
                     className="w-full bg-black/50 border border-gray-700 rounded-2xl px-6 py-5 text-center font-mono text-blue-400 outline-none" />
-                  <button onClick={handleUnlockVault} className="w-full bg-blue-600 py-5 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-2xl shadow-blue-600/30 hover:bg-blue-500">Unlock Dashboard</button>
+                  <button onClick={handleUnlockVault} className="w-full bg-blue-600 py-5 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-2xl shadow-blue-600/30 hover:bg-blue-500 transition-all">Unlock Console</button>
                 </div>
               ) : (
                 <div className="space-y-6">
                    <div className="flex items-center gap-5 p-6 bg-green-500/10 border border-green-500/20 rounded-3xl">
                       <div className="w-12 h-12 rounded-2xl bg-green-500/20 flex items-center justify-center text-green-500"><i className="fas fa-check"></i></div>
                       <div>
-                        <p className="text-[11px] font-black uppercase text-green-500">Connected</p>
+                        <p className="text-[11px] font-black uppercase text-green-500">Authenticated</p>
                         <p className="text-[10px] font-mono text-gray-500 truncate max-w-[140px]">{githubUser}/{githubRepo}</p>
                       </div>
                    </div>
                    <button onClick={triggerDiagnostic} className="w-full bg-amber-600/20 border border-amber-500/30 py-4 rounded-2xl font-black uppercase text-[9px] tracking-widest text-amber-500 hover:bg-amber-600/30 transition-all">
-                    <i className="fas fa-heartbeat mr-2"></i> Trigger Heartbeat
+                    <i className="fas fa-bolt mr-2"></i> Test Remote Access
                    </button>
-                   <button onClick={() => { localStorage.removeItem('gh_vault'); window.location.reload(); }} className="w-full bg-red-900/10 border border-red-900/30 py-4 rounded-2xl font-black uppercase text-[9px] tracking-widest text-red-500 hover:bg-red-900/20 transition-all">Reset All Settings</button>
-                   <button onClick={() => setIsVaultLocked(true)} className="w-full bg-gray-900 border border-gray-700 py-5 rounded-2xl font-black uppercase text-[9px] tracking-widest text-gray-500 hover:text-white">Relock Console</button>
+                   <button onClick={() => { localStorage.removeItem('gh_vault'); window.location.reload(); }} className="w-full bg-red-900/10 border border-red-900/30 py-4 rounded-2xl font-black uppercase text-[9px] tracking-widest text-red-500 hover:bg-red-900/20 transition-all">Wipe Local Credentials</button>
+                   <button onClick={() => setIsVaultLocked(true)} className="w-full bg-gray-900 border border-gray-700 py-5 rounded-2xl font-black uppercase text-[9px] tracking-widest text-gray-500 hover:text-white transition-all">Lock Console</button>
                 </div>
               )}
            </div>
 
-           <div className="bg-gray-800 p-8 rounded-[3rem] border border-gray-700 shadow-xl space-y-4">
-              <h3 className="text-[11px] font-black uppercase text-gray-400 tracking-[0.3em] mb-4">Troubleshooting</h3>
-              <div className="space-y-3">
-                 <div className="flex gap-3 items-start">
-                    <span className="text-blue-500 font-black text-xs">01</span>
-                    <p className="text-[10px] text-gray-400 leading-relaxed uppercase font-bold">Ensure <strong>Actions > General > Workflow permissions</strong> is set to "Read and write permissions" in Repo Settings.</p>
+           <div className="bg-gray-800 p-8 rounded-[3rem] border border-gray-700 shadow-xl space-y-6">
+              <h3 className="text-[11px] font-black uppercase text-gray-400 tracking-[0.3em]">Critical Setup Checklist</h3>
+              <div className="space-y-4">
+                 <div className="flex gap-4 items-start">
+                    <span className="bg-blue-600/20 text-blue-400 font-black text-[9px] w-6 h-6 flex items-center justify-center rounded-lg shrink-0">1</span>
+                    <p className="text-[10px] text-gray-400 font-bold uppercase leading-relaxed">Repo Settings: <strong>Actions > General</strong>. Set "Workflow permissions" to <strong>"Read and write permissions"</strong>.</p>
                  </div>
-                 <div className="flex gap-3 items-start">
-                    <span className="text-blue-500 font-black text-xs">02</span>
-                    <p className="text-[10px] text-gray-400 leading-relaxed uppercase font-bold">Your PAT must have <strong>'repo'</strong> and <strong>'workflow'</strong> scopes checked.</p>
+                 <div className="flex gap-4 items-start">
+                    <span className="bg-blue-600/20 text-blue-400 font-black text-[9px] w-6 h-6 flex items-center justify-center rounded-lg shrink-0">2</span>
+                    <p className="text-[10px] text-gray-400 font-bold uppercase leading-relaxed">The <strong>API_KEY</strong> must be saved in <strong>Settings > Secrets and variables > Actions</strong>.</p>
                  </div>
-                 <div className="flex gap-3 items-start">
-                    <span className="text-blue-500 font-black text-xs">03</span>
-                    <p className="text-[10px] text-gray-400 leading-relaxed uppercase font-bold">Check the <strong>Actions</strong> tab on GitHub for real-time error logs.</p>
+                 <div className="flex gap-4 items-start">
+                    <span className="bg-blue-600/20 text-blue-400 font-black text-[9px] w-6 h-6 flex items-center justify-center rounded-lg shrink-0">3</span>
+                    <p className="text-[10px] text-gray-400 font-bold uppercase leading-relaxed">Your <strong>PAT</strong> must have both <strong>repo</strong> and <strong>workflow</strong> scopes checked during creation.</p>
                  </div>
               </div>
            </div>

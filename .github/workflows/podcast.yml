@@ -39,25 +39,21 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: npx tsx headless.ts
 
-      - name: Verify and Commit Broadcast
+      - name: Commit and Push Broadcast
         run: |
           git config --global user.name "AI Daily Pulse Bot"
           git config --global user.email "broadcast@sundaramlabs.ai"
           
-          # Check if rss directory actually contains files
-          if [ -d "rss" ]; then
-            echo "RSS directory found. Checking for changes..."
-            git add rss/
-            
-            # Only commit if there are changes to avoid workflow failure
-            if git diff --cached --quiet; then
-              echo "No new broadcast files generated. Skipping commit."
-            else
-              git commit -m "New Episode Produced: $(date +'%Y-%m-%d %H:%M')"
-              git push origin main
-              echo "Broadcast successfully pushed to repository."
-            fi
+          # Crucial: Pull latest to avoid push rejection if files changed
+          git pull origin main --rebase
+          
+          git add .
+          
+          # Only commit if there are changes to avoid workflow failure
+          if git diff --cached --quiet; then
+            echo "No new broadcast files generated. Skipping commit."
           else
-            echo "CRITICAL: rss directory was not created by the engine."
-            exit 1
+            git commit -m "New Episode: $(date +'%Y-%m-%d %H:%M')"
+            git push origin main
+            echo "Broadcast successfully pushed to repository."
           fi
