@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>AI Daily Pulse</title>
+    <link>https://sunisankara.github.io/ai-pulse-podcast/rss</link>
+    <language>en-us</language>
+    <itunes:author>Sundaram Labs</itunes:author>
+    <itunes:summary>Your daily 15-minute conversational deep dive into latest AI developments. Optimized 10-12 word summaries.</itunes:summary>
+    <description>Automated daily AI intelligence briefing.</description>
+    <itunes:owner>
+      <itunes:name>Sundaram Labs</itunes:name>
+      <itunes:email>broadcast@sundaramlabs.ai</itunes:email>
+    </itunes:owner>
+    <itunes:explicit>no</itunes:explicit>
+    <itunes:category text="Technology"/>
+    <itunes:image href="https://sunisankara.github.io/ai-pulse-podcast/rss/cover.jpg"/>
+    <lastBuildDate>Wed, 25 Feb 2026 13:11:00 GMT</lastBuildDate>
+    
+    <item>
+      <title>**NVIDIA Rubin Era Unleashed: Why Sovereign Agentic AI Replaces General Purpose Chatbots**</title>
+      <description><![CDATA[<p>**Title:** AI Daily Pulse  
+**Date:** Wednesday, February 25, 2026  
+**Host:** Marcus (Strategic Visionary)  
+**Host:** Alex (Technical Architect)  
+**Duration:** ~15 Minutes
+
+---
+
+**[INTRO MUSIC FADES]**
+
+**MARCUS:** It is Wednesday, February 25th, 2026. We are officially in the "Rubin Era," and the landscape of AI is looking less like a giant chat box and more like a fragmented map of digital nations. I’m Marcus.
+
+**ALEX:** And I’m Alex. And if I hear one more person tell me that hardware is a...</p>]]></description>
+      <pubDate>Wed, 25 Feb 2026 13:11:00 GMT</pubDate>
+      <guid isPermaLink="false">1772024717003</guid>
+      <enclosure url="https://sunisankara.github.io/ai-pulse-podcast/rss/AI-Pulse-1772024717003.mp3" length="0" type="audio/mpeg"/>
+      <itunes:author>AI Daily Pulse</itunes:author>
+      <itunes:duration>15:00</itunes:duration>
+      <itunes:explicit>no</itunes:explicit>
+    </item>
+  </channel>
+</rss>
