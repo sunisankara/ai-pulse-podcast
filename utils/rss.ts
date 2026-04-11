@@ -11,7 +11,7 @@ export function generateRSSFeed(
   const items = episodes
     .map(e => {
       const storyList = e.mainStories && e.mainStories.length > 0 
-        ? `<p><strong>Intelligence Brief:</strong></p><ul>${e.mainStories.map(s => `<li>${s}</li>`).join('')}</ul><hr/>`
+        ? `<p><strong>Intelligence Brief:</strong></p><ul>${e.mainStories.map(s => `<li>${s.replace(/&/g, '&amp;')}</li>`).join('')}</ul><hr/>`
         : '';
       
       // The baseUrl passed here should already include the /rss path if needed
@@ -21,8 +21,8 @@ export function generateRSSFeed(
         
       return `
     <item>
-      <title>${e.title}</title>
-      <description><![CDATA[${storyList}<p>${e.script.substring(0, 500)}...</p>]]></description>
+      <title>${e.title.replace(/&/g, '&amp;')}</title>
+      <description><![CDATA[${storyList}<p>${e.script.substring(0, 500).replace(/&/g, '&amp;')}...</p>]]></description>
       <pubDate>${new Date(e.date).toUTCString()}</pubDate>
       <guid isPermaLink="false">${e.id}</guid>
       <enclosure url="${audioLink}" length="0" type="audio/mpeg"/>
